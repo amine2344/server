@@ -4,7 +4,7 @@ import { AccessToken, RoomServiceClient } from 'livekit-server-sdk';
 const app = express();
 const port = 3000;
 
-const livekitHost = 'https://your-livekit-host.com'; // Replace with your LiveKit server URL
+const livekitHost = 'wss://phenix-vh8jhnzm.livekit.cloud'; // Replace with your LiveKit server URL
 const apiKey = 'APIew9aRkyjMwkg'; // Replace with your API key
 const apiSecret = '7O5Guflr9se47Z1Zk1MsjoIwwtNuIrjAs0dx3nN4fmmB'; // Replace with your API secret
 
