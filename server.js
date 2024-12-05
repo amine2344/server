@@ -10,7 +10,7 @@ const createToken = async () => {
   // It's available as LocalParticipant.identity with livekit-client SDK
   const participantName = 'quickstart-username';
 
-  const at = new AccessToken(process.env.LIVEKIT_API_KEY, process.env.LIVEKIT_API_SECRET, {
+  const at = new AccessToken("APIew9aRkyjMwkg", "7O5Guflr9se47Z1Zk1MsjoIwwtNuIrjAs0dx3nN4fmmB", {
     identity: participantName,
     // Token to expire after 10 minutes
     ttl: '10m',
