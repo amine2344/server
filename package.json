@@ -1,0 +1,7 @@
+{
+  "type": "module",
+  "dependencies": {
+    "express": "^4.21.1",
+    "livekit-server-sdk": "^2.9.3"
+  }
+}
