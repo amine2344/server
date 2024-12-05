@@ -1,30 +1,81 @@
-// server.js
 import express from 'express';
-import { AccessToken } from 'livekit-server-sdk';
+import { AccessToken, RoomServiceClient } from 'livekit-server-sdk';
 
-const createToken = async () => {
-  // If this room doesn't exist, it'll be automatically created when the first
-  // participant joins
-  const roomName = 'quickstart-room';
-  // Identifier to be used for participant.
-  // It's available as LocalParticipant.identity with livekit-client SDK
-  const participantName = 'quickstart-username';
+const livekitHost = 'https://my.livekit.host';
+const apiKey = "APIew9aRkyjMwkg";
+const apiSecret = "7O5Guflr9se47Z1Zk1MsjoIwwtNuIrjAs0dx3nN4fmmB";
+const roomService = new RoomServiceClient(livekitHost, apiKey, apiSecret);
 
-  const at = new AccessToken("APIew9aRkyjMwkg", "7O5Guflr9se47Z1Zk1MsjoIwwtNuIrjAs0dx3nN4fmmB", {
+const createToken = async (roomName, participantName) => {
+  const at = new AccessToken(apiKey, apiSecret, {
     identity: participantName,
-    // Token to expire after 10 minutes
-    ttl: '10m',
+    ttl: '10m', // Token valid for 10 minutes
   });
   at.addGrant({ roomJoin: true, room: roomName });
 
-  return await at.toJwt();
+  return at.toJwt();
 };
 
 const app = express();
+app.use(express.json());
+
 const port = 3000;
 
-app.get('/getToken', async (req, res) => {
-  res.send(await createToken());
+// Endpoint to get a token
+app.post('/getToken', async (req, res) => {
+  const { roomName, participantName } = req.body;
+  if (!roomName || !participantName) {
+    return res.status(400).json({ error: 'roomName and participantName are required' });
+  }
+
+  try {
+    const token = await createToken(roomName, participantName);
+    res.json({ token });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to generate token' });
+  }
+});
+
+// Endpoint to create a room
+app.post('/createRoom', async (req, res) => {
+  const { name, emptyTimeout = 600, maxParticipants = 20 } = req.body;
+
+  if (!name) {
+    return res.status(400).json({ error: 'Room name is required' });
+  }
+
+  try {
+    const room = await roomService.createRoom({ name, emptyTimeout, maxParticipants });
+    res.json({ room });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to create room' });
+  }
+});
+
+// Endpoint to list rooms
+app.get('/listRooms', async (req, res) => {
+  try {
+    const rooms = await roomService.listRooms();
+    res.json({ rooms });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to list rooms' });
+  }
+});
+
+// Endpoint to delete a room
+app.delete('/deleteRoom', async (req, res) => {
+  const { name } = req.body;
+
+  if (!name) {
+    return res.status(400).json({ error: 'Room name is required' });
+  }
+
+  try {
+    await roomService.deleteRoom(name);
+    res.json({ message: 'Room deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete room' });
+  }
 });
 
 app.listen(port, () => {
