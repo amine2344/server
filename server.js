@@ -80,7 +80,7 @@ app.delete('/deleteRoom', async (req, res) => {
 app.get('/getToken', async (req, res) => {
   try {
     const token = await createToken();
-    res.send({ token });
+    res.send( token );
   } catch (err) {
     console.error(err);
     res.status(500).json({ msg: 'Error generating token', error: err.message });
