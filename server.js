@@ -37,6 +37,11 @@ const createRoomToken = async (roomName, participantName) => {
   return await at.toJwt();
 };
 
+// Add the /rtc/validate endpoint
+app.get('/rtc/validate', (req, res) => {
+  res.json({ msg: 'RTC validate endpoint is working' });
+});
+
 // Create a new room
 app.post('/createRoom', async (req, res) => {
   const { name } = req.body;
@@ -80,7 +85,7 @@ app.delete('/deleteRoom', async (req, res) => {
 app.get('/getToken', async (req, res) => {
   try {
     const token = await createToken();
-    res.send( token );
+    res.send(token);
   } catch (err) {
     console.error(err);
     res.status(500).json({ msg: 'Error generating token', error: err.message });
