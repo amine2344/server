@@ -41,6 +41,9 @@ const createRoomToken = async (roomName, participantName) => {
 app.get('/rtc/validate', (req, res) => {
   res.json({ msg: 'RTC validate endpoint is working' });
 });
+app.get('/rtc', (req, res) => {
+  res.json({ msg: 'RTC validate endpoint is working' });
+});
 
 // Create a new room
 app.post('/createRoom', async (req, res) => {
